@@ -23,3 +23,5 @@ This way, the text and the reference vector can be printed and stored in separat
 Finally, the phrase can be reconstructed manually or with the utility I propose.
 
 ![opw - qrgeneration](doc/images/README-opw-s3.png)
+
+You should download de html file and open only from your device: [opw.html](https://raw.githubusercontent.com/orencio/opw/refs/heads/main/opw.html) (after open, save it to your device path).
