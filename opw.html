@@ -3,6 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <title>Obfuscation and deobfuscation with QR codes</title>
+
+  <style>
+    blockquote {
+        font-style: italic;
+        border-left: 4px solid #ccc;
+        padding-left: 1em;
+        margin: 1em 0;
+        color: #555;
+    }
+  </style>
+
   <!-- Library to generate QR codes. -->
   <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script> -->
   <script>
@@ -68,7 +79,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
     <label for="numAdditional">Number of additional words from BIP-39 to be added:</label>
     <input type="number" id="numAdditional" value="15"><br>
     <button onclick="generateObfuscated()">Generate obfuscate phrase words</button>
-    <p><strong>Resultado:</strong> <span id="obfuscatedResult"></span></p>
+    <p><span id="obfuscatedResult"></span></p>
   </div>
 
   <hr>
@@ -81,10 +92,10 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
     <textarea id="inputText" rows="10" cols="80" placeholder="Ej.: Hello to the shore, goodbye to the sea, ..."></textarea><br>
     <button onclick="generateQRAndVector()">Generate QR codes</button>
 
-    <h3>Text QR code:</h3>
+    <div id="qrTextLabel"></div>
     <div id="qrText"></div>
 
-    <h3>Position vector QR:</h3>
+    <div id="qrVectorLabel"></div>
     <div id="qtVectorNumbers"></div>
     <div id="qrVector"></div>
   </div>
@@ -93,7 +104,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
   <div class="section">
     <h2>Section 3: deobfuscate phrase words</h2>
     <p>
-      To deobfuscate the phrase, you can either upload the generated QR images (option A), or manually enter the text and vector (option B).
+      To deobfuscate the phrase, you can either upload the generated QR images (option A), manually enter the text and vector (option B), o rmix boths.
     </p>
     <h3>Option A: upload QR code imgaes:</h3>
     <label for="qrTextFile">Text QR code image:</label><br>
@@ -102,13 +113,13 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
     <input type="file" id="qrVectorFile" accept="image/*"><br>
 
     <h3>Option B: enter text and vector manually:</h3>
-    <label for="manualText">Texto (contenido del QR):</label><br>
+    <label for="manualText">Text (contenido del QR):</label><br>
     <textarea id="manualText" rows="6" cols="80" placeholder="Paste here the text extracted from the QR..."></textarea><br>
     <label for="manualVector">Vector (contenido del QR):</label><br>
     <input type="text" id="manualVector" size="80" placeholder="Ej.: 000002001003..."><br>
 
     <button onclick="deobfuscateHandler()">Deobfuscate phrase words</button>
-    <p><strong>Discovered words:</strong> <span id="deobfuscateResult"></span></p>
+    <div id="deobfuscateResult"></div>
   </div>
 
    <hr>
@@ -124,7 +135,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
     <label for="manualPassText">Password or text:</label><br>
     <textarea id="manualPassText" rows="6" cols="80" placeholder="Paste the text here..."></textarea><br>
     <button onclick="generatePassQR()">Generate QR</button>
-    <h3>QR code:</h3>
+    <div id="qrPassTextLabel"></div>
     <div id="qrPassText"></div>
 
     <h3>Opction B: read QR image:</h3>
@@ -133,7 +144,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
     <label for="qrPassTextRC">Is this QR code for a password or any other text encoded as base-64?:</label>
     <input type="checkbox" id="qrPassTextRC"><br>
     <button onclick="readQRPassText()">Read QR</button>
-    <p><strong>Decoded text:</strong><br><span id="deobfuscatePassText"></span></p>
+    <p><div id="deobfuscatePassTextLabel"></div><blockquote id="deobfuscatePassText"></blockquote</p>
   </div>
 
   <script>
@@ -375,13 +386,12 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         obfuscated.push(temp.splice(idx, 1)[0]);
       }
 
-        aiQuestion = `From your AI ask the following question and copy the resulting text (it will be used below for the QR code generation). It is recommended due to qrcode.js library, do not exced from 1200 ASCII characters. Ask this:
+      aiQuestion = `<p>Ok, now ask to your AI something similar to what I indicate below, and copy the resulting AI text (it will be used below for the QR code generation). It is recommended due to qrcode.js library, do not exced from 1200 ASCII characters. Ask this:</p>
+<blockquote><p>Write a narrative text with a poetic style, with multiples paragraphs and no more than 1200 characters (but about 1200 characters) using all of these words as they are written (they can by uppercase or lowercase, but no plural): "<b>${obfuscated.join(" ")}</b>".</p>
+<p>The text must use only ASCII characters from this set: [0-9a-zA-Zn .,]</p>
+<p>No other punctuation is allowed—not even quotation marks or dashes.</p></blockquote>`
 
-Write a narrative text with a poetic style, with multiples paragraphs and no more than 1200 characters (but about 1200 characters) using all of these words as they are written (they can by uppercase or lowercase, but no plural): "${obfuscated.join(" ")}".
-The text must use only ASCII characters from this set: [0-9a-zA-Zn .,]
-No other punctuation is allowed—not even quotation marks or dashes.`
-
-      document.getElementById("obfuscatedResult").innerText = aiQuestion;
+      document.getElementById("obfuscatedResult").innerHTML = aiQuestion;
     }
 
     // Function to convert text into an array (by paragraphs and words).
@@ -434,6 +444,8 @@ No other punctuation is allowed—not even quotation marks or dashes.`
       // Clear previous QR codes.
       document.getElementById("qrText").innerHTML = "";
       document.getElementById("qrVector").innerHTML = "";
+      document.getElementById("qrTextLabel").innerHTML = "<h3>Text QR code:</h3>";
+      document.getElementById("qrVectorLabel").innerHTML = "<h3>Position vector QR:</h3>";
 
       let text = document.getElementById("inputText").value;
       let phrase = document.getElementById("inputWords").value.trim();
@@ -470,8 +482,9 @@ No other punctuation is allowed—not even quotation marks or dashes.`
     function generatePassQR() {
       // Limpiar códigos QR anteriores
       document.getElementById("qrPassText").innerHTML = "";
+      document.getElementById("qrPassTextLabel").innerHTML = "<h3>QR code:</h3>";
 
-        let text = btoa(document.getElementById("manualPassText").value);
+      let text = btoa(document.getElementById("manualPassText").value);
 
       if (text === "") {
         alert("Please enter the text.");
@@ -574,7 +587,7 @@ No other punctuation is allowed—not even quotation marks or dashes.`
       }
 
       let resultPhrase = deobfuscatePhrase(textData, vectorData);
-      document.getElementById("deobfuscateResult").innerText = resultPhrase;
+      document.getElementById("deobfuscateResult").innerHTML = `<p><strong>Discovered words:</strong></p><blockquote>${resultPhrase}</blockquote>`;
     }
 
     // Controller function that obtains key text.
@@ -598,7 +611,9 @@ No other punctuation is allowed—not even quotation marks or dashes.`
       if (document.getElementById("qrPassTextRC").checked) {
           resultPassText = atob(resultPassText);
       }
-        document.getElementById("deobfuscatePassText").innerText = `«${resultPassText}»`;
+
+      document.getElementById("deobfuscatePassTextLabel").innerHTML = "<strong>Decoded text:</strong><br>";
+      document.getElementById("deobfuscatePassText").innerText = resultPassText;
     }
   </script>
 </body>
