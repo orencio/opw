@@ -458,7 +458,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
       let vector = generateVector(phrase, text);
       if (vector === "") return; // Stops if a word was not found.
 
-      document.getElementById("qtVectorNumbers").innerHTML = `Vector is "<b>${vector}</b>".<br>This number is organised in 6-digit groups, where the first 3 digits of each group represent the number of the paragraph of the obfuscated text.<br>The last 3 digits represent the word (position) in that paragraph.<br><br>All digits are references to 0 as the first element.`
+      document.getElementById("qtVectorNumbers").innerHTML = `<p>Vector is "<b>${vector}</b>".</p><p>This number is organised in 6-digit groups, where the first 3 digits of each group represent the number of the paragraph of the obfuscated text.<br>The last 3 digits represent the word (position) in that paragraph. All digits are references to 0 as the first element.</p>`
 
       // Generate QR code for text.
       new QRCode(document.getElementById("qrText"), {
