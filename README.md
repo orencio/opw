@@ -1,6 +1,6 @@
 # opw
 
-**Obfuscate Phrase Words** is a tool designed to obscure the content of the seed phrase words used to generate a Bitcoin (and other) wallet.
+**Obfuscate Phrase Words** (<https://github.com/orencio/opw>) is a tool designed to obscure the content of the seed phrase words used to generate a Bitcoin (and other) wallet.
 
 The idea for this tool emerged after a Bitcoin meetup where most attendees agreed that the seed phrase words for a wallet should be printed and kept hidden, just in case everything else fails.
 
